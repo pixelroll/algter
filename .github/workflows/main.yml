@@ -25,7 +25,7 @@ jobs:
         run: mvn package -DskipTests  # Exécute la commande Maven pour la compilation
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3  # Mise à jour vers la version v3
         with:
           name: build-artifacts  # Nom des artefacts
           path: target/  # Chemin vers le répertoire contenant les artefacts à sauvegarder
@@ -45,7 +45,7 @@ jobs:
           java-version: '11'
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3  # Mise à jour vers la version v3
         with:
           name: build-artifacts  # Le nom des artefacts à récupérer
           path: target/  # Dossier où les artefacts seront téléchargés
