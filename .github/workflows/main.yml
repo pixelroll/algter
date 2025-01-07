@@ -1,0 +1,54 @@
+name: Maven Build and Test
+
+on:
+  push:
+    branches:
+      - main  # ou la branche sur laquelle vous souhaitez exécuter l'action
+  pull_request:
+    branches:
+      - main  # ou la branche sur laquelle vous souhaitez exécuter l'action
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Utilise une image Ubuntu (vous pouvez aussi utiliser d'autres environnements)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Permet de récupérer le code source du dépôt
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Build project with Maven
+        run: mvn package -DskipTests  # Exécute la commande Maven pour la compilation
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts  # Nom des artefacts
+          path: target/  # Chemin vers le répertoire contenant les artefacts à sauvegarder
+
+  test:
+    runs-on: ubuntu-latest  # Utilise une image Ubuntu
+
+    needs: build  # Dépend de l'étape de build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Récupère le code source
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifacts  # Le nom des artefacts à récupérer
+          path: target/  # Dossier où les artefacts seront téléchargés
+
+      - name: Run tests
+        run: mvn test -DlastModGranularityMs=10000000  # Exécute les tests avec Maven
